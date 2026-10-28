@@ -1,0 +1,241 @@
+{
+  "recordedAt": "2026-10-28T23:43:25.893931+00:00",
+  "runs": [
+    {
+      "name": "tokens",
+      "exitCode": 99,
+      "expectedExitCode": 99,
+      "failedThresholds": [
+        "token_accepted:rate==1"
+      ],
+      "expectedFailedThresholds": [
+        "token_accepted:rate==1"
+      ],
+      "evidence": [
+        {
+          "claim": "a token works on any copy",
+          "responses": {
+            "172.23.0.3:8080": {
+              "200": 20
+            },
+            "172.23.0.2:8080": {
+              "401": 20
+            }
+          }
+        }
+      ],
+      "metrics": {
+        "checks": {
+          "values": {
+            "rate": 1,
+            "passes": 80,
+            "fails": 0
+          },
+          "thresholds": {
+            "rate==1": {
+              "ok": true
+            }
+          }
+        },
+        "token_accepted": {
+          "values": {
+            "rate": 0.5,
+            "passes": 20,
+            "fails": 20
+          },
+          "thresholds": {
+            "rate==1": {
+              "ok": false
+            }
+          }
+        },
+        "proxy_upstreams": {
+          "values": {
+            "count": 2,
+            "rate": 42.50623927833247
+          },
+          "thresholds": {
+            "count==2": {
+              "ok": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "single-copy-control",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "failedThresholds": [],
+      "expectedFailedThresholds": [],
+      "evidence": [
+        {
+          "claim": "a room slot is booked at most once",
+          "roomId": "r-2",
+          "start": "2026-10-29T12:00:00Z",
+          "minutes": 60,
+          "proxyUpstreams": [
+            "172.23.0.2:8080",
+            "172.23.0.3:8080"
+          ],
+          "expectedTargets": 1,
+          "results": [
+            {
+              "target": "http://f26-lab09-api-1:8080",
+              "address": "172.23.0.3:8080",
+              "status": 201,
+              "outcome": "confirmed",
+              "bookingId": "bk-47a56e10-f6b7-4cf0-ba0f-9746f59659a6"
+            },
+            {
+              "target": "http://f26-lab09-api-1:8080",
+              "address": "172.23.0.3:8080",
+              "status": 202,
+              "outcome": "waitlisted"
+            }
+          ]
+        }
+      ],
+      "metrics": {
+        "checks": {
+          "values": {
+            "fails": 0,
+            "rate": 1,
+            "passes": 87
+          },
+          "thresholds": {
+            "rate==1": {
+              "ok": true
+            }
+          }
+        },
+        "proxy_upstreams": {
+          "values": {
+            "count": 2,
+            "rate": 9.820232445196584
+          },
+          "thresholds": {
+            "count==2": {
+              "ok": true
+            }
+          }
+        },
+        "confirmed_bookings": {
+          "values": {
+            "count": 1,
+            "rate": 4.910116222598292
+          },
+          "thresholds": {
+            "count<=1": {
+              "ok": true
+            },
+            "count>=1": {
+              "ok": true
+            }
+          }
+        },
+        "booking_targets": {
+          "values": {
+            "count": 1,
+            "rate": 4.910116222598292
+          },
+          "thresholds": {
+            "count==1": {
+              "ok": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "double-booking",
+      "exitCode": 99,
+      "expectedExitCode": 99,
+      "failedThresholds": [
+        "confirmed_bookings:count<=1"
+      ],
+      "expectedFailedThresholds": [
+        "confirmed_bookings:count<=1"
+      ],
+      "evidence": [
+        {
+          "claim": "a room slot is booked at most once",
+          "roomId": "r-1",
+          "start": "2026-10-29T10:00:00Z",
+          "minutes": 60,
+          "proxyUpstreams": [
+            "172.23.0.2:8080",
+            "172.23.0.3:8080"
+          ],
+          "expectedTargets": 2,
+          "results": [
+            {
+              "target": "http://f26-lab09-api-1:8080",
+              "address": "172.23.0.3:8080",
+              "status": 201,
+              "outcome": "confirmed",
+              "bookingId": "bk-48a9619b-de00-4948-b427-972fe114ae85"
+            },
+            {
+              "target": "http://f26-lab09-api-2:8080",
+              "address": "172.23.0.2:8080",
+              "status": 201,
+              "outcome": "confirmed",
+              "bookingId": "bk-cb825499-3681-4077-9ab7-7d4a9841d2da"
+            }
+          ]
+        }
+      ],
+      "metrics": {
+        "checks": {
+          "values": {
+            "rate": 1,
+            "passes": 88,
+            "fails": 0
+          },
+          "thresholds": {
+            "rate==1": {
+              "ok": true
+            }
+          }
+        },
+        "confirmed_bookings": {
+          "values": {
+            "count": 2,
+            "rate": 9.874629238530309
+          },
+          "thresholds": {
+            "count>=1": {
+              "ok": true
+            },
+            "count<=1": {
+              "ok": false
+            }
+          }
+        },
+        "proxy_upstreams": {
+          "values": {
+            "count": 2,
+            "rate": 9.874629238530309
+          },
+          "thresholds": {
+            "count==2": {
+              "ok": true
+            }
+          }
+        },
+        "booking_targets": {
+          "values": {
+            "count": 2,
+            "rate": 9.874629238530309
+          },
+          "thresholds": {
+            "count==2": {
+              "ok": true
+            }
+          }
+        }
+      }
+    }
+  ]
+}
